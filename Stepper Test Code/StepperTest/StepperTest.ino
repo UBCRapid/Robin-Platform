@@ -7,11 +7,14 @@
 #define FORWARD 1
 #define BACKWARD -1
 
-int direction = FORWARD;
-int stepSize = 360;
 
+//Set initial step size and direction
+  int direction = FORWARD;
+  long stepSize = 400;
+  
 void setup() 
 {
+  //Setup pins
   Serial.begin(9600);
   pinMode(DIR_PIN, OUTPUT); 
   pinMode(STEP_PIN, OUTPUT); 
@@ -35,7 +38,7 @@ void loop()
     }
     else if (value == 'g') // Send movement command
     {
-      rotateDeg(360 * direction, 0.25);
+      rotateDeg( stepSize * direction, 1);
       Serial.println("Sending movement command");
     }
     else if (value == '+')
