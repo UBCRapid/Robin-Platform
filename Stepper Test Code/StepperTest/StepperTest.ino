@@ -6,15 +6,18 @@
 #define STEP_PIN 3  // Plug into pin 1 of the stepper driver
 #define FORWARD 1
 #define BACKWARD -1
+#define STEPSPERREV 200 //standard for 1.8 deg stepper motors
+#define MICROSTEPSPERSTEP 10 //settable according to dipswitches on stepper driver. Decimal Stepper size increments currently set on jumpers.
+//10 mm linear travel per revolution of stepper
 
 
 //Set initial step size and direction
   int direction = FORWARD;
-  long stepSize = 400;
+  int stepSize = STEPSPERREV * MICROSTEPSPERSTEP; //initialize stepper to turn once, so travelling 10 mm
   
 void setup() 
 {
-  //Setup pins
+  //Setup pinsM
   Serial.begin(9600);
   pinMode(DIR_PIN, OUTPUT); 
   pinMode(STEP_PIN, OUTPUT); 
@@ -36,15 +39,25 @@ void loop()
       Serial.println("Direction set to BACKWARD");
       direction = BACKWARD;
     }
+    else if (value == 'p') // print current direction and stepsize
+    {
+      Serial.print("The current direction is ");
+      if( direction == FORWARD )
+        Serial.println("FORWARD");
+      else 
+        Serial.println("BACKWARD");
+      Serial.print("The current step size is ");
+      Serial.println(stepSize);
+    } 
     else if (value == 'g') // Send movement command
     {
-      rotateDeg( stepSize * direction, 1);
       Serial.println("Sending movement command");
+      rotate( stepSize * direction, 1);
     }
     else if (value == '+')
     {
       stepSize *= 2;
-      Serial.print("Step size doubled. Step size now ");
+      Serial.print("Step Size doubled. Step size now ");
       Serial.println(stepSize);
     }
     else if (value = '-')
